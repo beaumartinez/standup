@@ -2,6 +2,7 @@ from __future__ import print_function
 
 from multiprocessing import Pool
 from multiprocessing import cpu_count
+from pprint import pformat
 from sys import argv
 from sys import exit
 from sys import stderr
@@ -68,4 +69,4 @@ if __name__ == '__main__':
     figo = Figo(username, key)
     figo._get_tickets()
 
-    print(figo.total_results)
+    print(pformat(figo.total_results))
