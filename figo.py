@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+from datetime import datetime
 from multiprocessing import Pool
 from multiprocessing import cpu_count
 from pprint import pformat
@@ -18,6 +19,9 @@ class Figo(object):
         self.username = username
         self.key = key
 
+        date = datetime.utcnow()
+        self.date = date.strftime('%Y-%m-%d')
+
         pickle_hack()
 
     def _create_session(self):
@@ -29,9 +33,9 @@ class Figo(object):
     def _get_ticket_page(self, page):
         session = self._create_session()
         response = session.get((
-            'https://api3.codebasehq.com/locus/tickets.json?query=sort:updated_at&'
+            'https://api3.codebasehq.com/locus/tickets.json?query=sort:updated_at+update:"{}"&'
             'page={}'
-        ).format(page))
+        ).format(self.date, page))
 
         if response.status_code != 200:
             return None
