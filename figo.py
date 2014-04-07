@@ -60,7 +60,7 @@ class Figo(object):
             offset += 1
             done = None in results
 
-        self.total_results = filter(lambda x: x is not None, total_results)
+        self.tickets = filter(lambda x: x is not None, total_results)
 
 
 if __name__ == '__main__':
@@ -73,4 +73,4 @@ if __name__ == '__main__':
     figo = Figo(username, key)
     figo._get_tickets()
 
-    print(pformat(figo.total_results))
+    print(pformat(figo.tickets))
