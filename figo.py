@@ -109,6 +109,7 @@ class Figo(object):
         self._filter_todays_ticket_notes()
         self._filter_own_ticket_notes()
 
+
 if __name__ == '__main__':
     try:
         username, key = argv[1], argv[2]
