@@ -3,7 +3,7 @@ from __future__ import print_function
 import logging
 from datetime import datetime
 from itertools import chain
-from multiprocessing import Pool
+from multiprocessing.dummy import Pool
 from multiprocessing import cpu_count
 from pprint import pformat
 from sys import argv
@@ -67,7 +67,10 @@ class Figo(object):
             total_results.extend(results)
 
             offset += 1
-            done = tuple() in results
+
+            result_lengths = map(len, results)
+            truncated_results = filter(lambda x: x < 20, result_lengths)
+            done = len(truncated_results) != 0
 
         self.tickets = chain(*total_results)
 
