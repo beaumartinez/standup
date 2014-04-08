@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import logging
 from datetime import datetime
 from itertools import chain
 from multiprocessing import Pool
@@ -12,6 +13,12 @@ from sys import stderr
 from requests import Session
 
 from pickle_hack import pickle_hack
+
+
+log = logging.getLogger('figo')
+
+log.addHandler(logging.StreamHandler())
+log.setLevel(logging.DEBUG)
 
 
 class Figo(object):
@@ -32,6 +39,8 @@ class Figo(object):
         return session
 
     def _get_ticket_page(self, page):
+        log.debug('Getting ticket page {}.'.format(page))
+
         session = self._create_session()
         response = session.get((
             'https://api3.codebasehq.com/locus/tickets.json?query=sort:updated_at+update:"{}"&'
@@ -46,8 +55,8 @@ class Figo(object):
     def _get_tickets(self):
         total_results = []
 
-        core_count = cpu_count()
-        pool = Pool()
+        core_count = 16
+        pool = Pool(core_count)
 
         offset = 0
         done = False
@@ -70,13 +79,16 @@ class Figo(object):
         )
 
     def _get_ticket_note(self, url):
+        log.debug('Getting ticket note {}.'.format(url))
+
         session = self._create_session()
         response = session.get(url)
 
         return response.json()
 
     def _get_ticket_notes(self):
-        pool = Pool()
+        core_count = 16
+        pool = Pool(core_count)
 
         ticket_notes = pool.map(self._get_ticket_note, self.ticket_note_urls)
         self.ticket_notes = chain(*ticket_notes)
@@ -85,6 +97,8 @@ class Figo(object):
         self.ticket_notes = filter(lambda x: x['ticket_note']['created_at'].startswith(self.date), self.ticket_notes)
 
     def _get_user_id(self):
+        log.debug('Getting user ID.')
+
         # username is in the format <domain>/<username>, we want just <username>
         simple_username = self.username[self.username.find('/') + 1:]
 
@@ -119,5 +133,6 @@ if __name__ == '__main__':
 
     figo = Figo(username, key)
     figo.get_own_ticket_notes()
+    notes = map(lambda x: x['ticket_note']['content'], figo.ticket_notes)
 
-    print(pformat(figo.ticket_notes))
+    print(pformat(notes))
