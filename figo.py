@@ -15,7 +15,7 @@ from requests import Session
 from pickle_hack import pickle_hack
 
 
-log = logging.getLogger('figo')
+log = logging.getLogger(__name__)
 
 log.addHandler(logging.StreamHandler())
 log.setLevel(logging.DEBUG)
