@@ -2,17 +2,12 @@ from __future__ import print_function
 
 import logging
 from datetime import datetime
-from itertools import chain
-from multiprocessing.dummy import Pool
-from multiprocessing import cpu_count
 from pprint import pformat
 from sys import argv
 from sys import exit
 from sys import stderr
 
 from requests import Session
-
-from pickle_hack import pickle_hack
 
 
 log = logging.getLogger(__name__)
@@ -30,7 +25,7 @@ class Figo(object):
         date = datetime.utcnow()
         self.date = date.strftime('%Y-%m-%d')
 
-        pickle_hack()
+        self.session = self._create_session()
 
     def _create_session(self):
         session = Session()
@@ -38,93 +33,55 @@ class Figo(object):
 
         return session
 
-    def _get_ticket_page(self, page):
-        log.debug('Getting ticket page {}.'.format(page))
+    def _get_users(self):
+        log.debug('Getting users.')
 
-        session = self._create_session()
-        response = session.get((
-            'https://api3.codebasehq.com/locus/tickets.json?query=sort:updated_at+update:"{}"&'
-            'page={}'
-        ).format(self.date, page))
-
-        if response.status_code != 200:
-            return tuple()
-        else:
-            return response.json()
+        response = self.session.get('https://api3.codebasehq.com/locus/assignments.json')
+        self.users = response.json()
 
     def _get_tickets(self):
-        total_results = []
+        tickets = []
 
-        core_count = 16
-        pool = Pool(core_count)
-
-        offset = 0
+        page = 0
         done = False
         while not done:
-            pages = range(offset * core_count, (offset + 1) * core_count)
-            results = pool.map(self._get_ticket_page, pages)
+            response = self.session.get((
+                'https://api3.codebasehq.com/locus/tickets.json?query=sort:updated_at+update:"{}"&'
+                'page={}'
+            ).format(self.date, page))
 
-            total_results.extend(results)
+            if response.status_code == 200:
+                tickets.extend(response.json())
 
-            offset += 1
+                page += 1
+            else:
+                done = True
 
-            result_lengths = map(len, results)
-            truncated_results = filter(lambda x: x < 20, result_lengths)
-            done = len(truncated_results) != 0
-
-        self.tickets = chain(*total_results)
+        self.tickets = tickets
 
     def _build_ticket_note_urls(self):
-        ticket_ids = map(lambda x: x['ticket']['ticket_id'], self.tickets)
-        self.ticket_note_urls = map(
-            lambda x: 'https://api3.codebasehq.com/locus/tickets/{}/notes.json'.format(x),
-            ticket_ids
-        )
-
-    def _get_ticket_note(self, url):
-        log.debug('Getting ticket note {}.'.format(url))
-
-        session = self._create_session()
-        response = session.get(url)
-
-        return response.json()
+        for ticket in self.tickets:
+            ticket['ticket']['ticket_note_url'] = (
+                'https://api3.codebasehq.com/locus/tickets/{}/notes.json'
+            ).format(ticket['ticket']['ticket_id'])
 
     def _get_ticket_notes(self):
-        core_count = 16
-        pool = Pool(core_count)
+        for ticket in self.tickets:
+            response = self.session.get(ticket['ticket']['ticket_note_url'])
 
-        ticket_notes = pool.map(self._get_ticket_note, self.ticket_note_urls)
-        self.ticket_notes = chain(*ticket_notes)
+            ticket['ticket']['ticket_notes'] = response.json()
 
     def _filter_todays_ticket_notes(self):
-        self.ticket_notes = filter(lambda x: x['ticket_note']['created_at'].startswith(self.date), self.ticket_notes)
-
-    def _get_user_id(self):
-        log.debug('Getting user ID.')
-
-        # username is in the format <domain>/<username>, we want just <username>
-        simple_username = self.username[self.username.find('/') + 1:]
-
-        session = self._create_session()
-
-        response = session.get('https://api3.codebasehq.com/locus/assignments.json')
-        users = response.json()
-
-        current_users = filter(lambda x: x['user']['username'] == simple_username, users)
-        current_user = current_users[0]
-
-        self.user_id = current_user['user']['id']
-
-    def _filter_own_ticket_notes(self):
-        self.ticket_notes = filter(lambda x: x['ticket_note']['user_id'] == self.user_id, self.ticket_notes)
+        for ticket in self.tickets:
+            ticket['ticket']['ticket_notes'] = filter(
+                lambda x: x['ticket_note']['created_at'].startswith(self.date), ticket['ticket']['ticket_notes']
+            )
 
     def get_own_ticket_notes(self):
         self._get_tickets()
         self._build_ticket_note_urls()
         self._get_ticket_notes()
-        self._get_user_id()
         self._filter_todays_ticket_notes()
-        self._filter_own_ticket_notes()
 
 
 if __name__ == '__main__':
@@ -136,6 +93,5 @@ if __name__ == '__main__':
 
     figo = Figo(username, key)
     figo.get_own_ticket_notes()
-    notes = map(lambda x: x['ticket_note']['content'], figo.ticket_notes)
 
-    print(pformat(notes))
+    print(pformat(figo.tickets))
