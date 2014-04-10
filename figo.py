@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import logging
+from collections import defaultdict
 from datetime import datetime
 from pprint import pformat
 from sys import argv
@@ -39,12 +40,22 @@ class Figo(object):
         response = self.session.get('https://api3.codebasehq.com/locus/assignments.json')
         self.users = response.json()
 
+    def _build_user_id_lookup(self):
+        user_lookup = {}
+
+        for user in self.users:
+            user_lookup[user['user']['id']] = user['user']['username']
+
+        self.user_lookup = user_lookup
+
     def _get_tickets(self):
         tickets = []
 
         page = 0
         done = False
         while not done:
+            log.debug('Getting tickets page {}.'.format(page))
+
             response = self.session.get((
                 'https://api3.codebasehq.com/locus/tickets.json?query=sort:updated_at+update:"{}"&'
                 'page={}'
@@ -67,6 +78,8 @@ class Figo(object):
 
     def _get_ticket_notes(self):
         for ticket in self.tickets:
+            log.debug('Getting notes for ticket {}.'.format(ticket['ticket']['ticket_id']))
+
             response = self.session.get(ticket['ticket']['ticket_note_url'])
 
             ticket['ticket']['ticket_notes'] = response.json()
@@ -77,14 +90,30 @@ class Figo(object):
                 lambda x: x['ticket_note']['created_at'].startswith(self.date), ticket['ticket']['ticket_notes']
             )
 
+    def _group_user_ticket_notes(self):
+        user_ticket_notes = defaultdict(set)
+
+        for ticket in self.tickets:
+            for note in ticket['ticket']['ticket_notes']:
+                username = self.user_lookup[note['ticket_note']['user_id']]
+
+                user_ticket_notes[username].add('{}: {}'.format(ticket['ticket']['ticket_id'], ticket['ticket']['summary']))
+
+        self.user_ticket_notes = dict(user_ticket_notes)
+
     def get_own_ticket_notes(self):
         self._get_tickets()
         self._build_ticket_note_urls()
         self._get_ticket_notes()
         self._filter_todays_ticket_notes()
+        self._get_users()
+        self._build_user_id_lookup()
+        self._group_user_ticket_notes()
 
 
 if __name__ == '__main__':
+    log.disabled = True
+
     try:
         username, key = argv[1], argv[2]
     except IndexError:
@@ -94,4 +123,11 @@ if __name__ == '__main__':
     figo = Figo(username, key)
     figo.get_own_ticket_notes()
 
-    print(pformat(figo.tickets))
+    for user in sorted(figo.user_ticket_notes):
+        print(user)
+
+        tickets = sorted(figo.user_ticket_notes[user])
+        for ticket in tickets:
+            print('\t{}'.format(ticket))
+
+        print()
