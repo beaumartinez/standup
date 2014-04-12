@@ -8,13 +8,28 @@ def _whitelist(keys, dict_):
     return {key: dict_[key] for key in keys}
 
 
+def _whitelist_as_struct(keys, dict_):
+    return Struct(**_whitelist(keys, dict_))
+
+
 def parse_ticket(ticket):
     ticket = ticket['ticket']
 
-    return Struct(**_whitelist((
+    return _whitelist_as_struct((
         'summary',
         'ticket_id',
-    ), ticket))
+    ), ticket)
+
+
+def parse_ticket_note(ticket_note):
+    ticket_note = ticket_note['ticket_note']
+
+    return _whitelist_as_struct((
+        'content',
+        'created_at',
+        'updates',
+        'user_id',
+    ), ticket_note)
 
 
 def parse_ticket_note(ticket_note):
