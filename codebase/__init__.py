@@ -1,19 +1,13 @@
-from __future__ import print_function
-
 import logging
 from collections import defaultdict
 from datetime import datetime
 from datetime import timedelta
-from pprint import pformat
-from sys import argv
-from sys import exit
-from sys import stderr
 
 from requests import Session
 
-from parser import parse_ticket
-from parser import parse_ticket_note
-from parser import parse_user
+from .parser import parse_ticket
+from .parser import parse_ticket_note
+from .parser import parse_user
 
 
 log = logging.getLogger(__name__)
@@ -133,25 +127,3 @@ class Codebase(object):
         self._build_user_id_lookup()
         self._set_ticket_note_usernames()
         self._group_user_tickets()
-
-
-if __name__ == '__main__':
-    log.disabled = True
-
-    try:
-        username, key = argv[1], argv[2]
-    except IndexError:
-        print('Please pass your username and key', file=stderr)
-        exit(1)
-
-    codebase = Codebase(username, key, 'locus')
-    codebase.get_tickets()
-
-    for user in sorted(codebase.user_tickets):
-        print(user)
-
-        tickets = sorted(codebase.user_tickets[user])
-        for ticket in tickets:
-            print('\t{}'.format(ticket))
-
-        print()
