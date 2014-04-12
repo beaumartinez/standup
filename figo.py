@@ -13,6 +13,7 @@ from requests import Session
 
 from parser import parse_ticket
 from parser import parse_ticket_note
+from parser import parse_user
 
 
 log = logging.getLogger(__name__)
@@ -44,11 +45,14 @@ class Codebase(object):
         response = self.session.get('https://api3.codebasehq.com/locus/assignments.json')
         self.users = response.json()
 
+    def _parse_users(self):
+        self.users = map(parse_user, self.users)
+
     def _build_user_id_lookup(self):
         user_lookup = {}
 
         for user in self.users:
-            user_lookup[user['user']['id']] = user['user']['username']
+            user_lookup[user.id] = user.username
 
         self.user_lookup = user_lookup
 
@@ -120,6 +124,7 @@ class Codebase(object):
         self._parse_ticket_notes()
         self._filter_todays_ticket_notes()
         self._get_users()
+        self._parse_users()
         self._build_user_id_lookup()
         self._group_user_ticket_notes()
 
