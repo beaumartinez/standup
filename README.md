@@ -14,7 +14,7 @@ To find out what the FUCK you did today, open up a terminal and type—
 
     python -m codebase <username> <key> <project>
 
-(NB, you can find <username> and <key> in Codebase somewhere.) Wait a few seconds and BOOM instant standup information.
+(NB, you can find `<username>` and `<key>` in Codebase somewhere.) Wait a few seconds and BOOM instant standup information.
 Added bonus is you can see what everyone else did, and call them out on LYING.
 
 Still a bit rusty and WIP but it works. Oh yeah you'll probably need to `pip install requests` first.
