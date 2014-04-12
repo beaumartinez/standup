@@ -41,23 +41,6 @@ class Codebase(object):
 
         return session
 
-    def _get_users(self):
-        log.debug('Getting users.')
-
-        response = self.session.get('https://api3.codebasehq.com/{}/assignments.json'.format(self.project))
-        self.users = response.json()
-
-    def _parse_users(self):
-        self.users = map(parse_user, self.users)
-
-    def _build_user_id_lookup(self):
-        user_lookup = {}
-
-        for user in self.users:
-            user_lookup[user.id] = user.username
-
-        self.user_lookup = user_lookup
-
     def _get_tickets(self):
         tickets = []
 
@@ -106,6 +89,23 @@ class Codebase(object):
             ticket.ticket_notes = filter(
                 lambda x: x.created_at.startswith(self.date), ticket.ticket_notes
             )
+
+    def _get_users(self):
+        log.debug('Getting users.')
+
+        response = self.session.get('https://api3.codebasehq.com/{}/assignments.json'.format(self.project))
+        self.users = response.json()
+
+    def _parse_users(self):
+        self.users = map(parse_user, self.users)
+
+    def _build_user_id_lookup(self):
+        user_lookup = {}
+
+        for user in self.users:
+            user_lookup[user.id] = user.username
+
+        self.user_lookup = user_lookup
 
     def _group_user_ticket_notes(self):
         user_ticket_notes = defaultdict(set)
