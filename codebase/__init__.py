@@ -23,10 +23,13 @@ class Codebase(object):
 
         self.project = project
 
-        date = datetime.utcnow()
-        self.date = date.strftime('%Y-%m-%d')
-
+        self.date = self._get_date()
         self.session = self._create_session()
+
+    def _get_date(self):
+        date = datetime.utcnow()
+
+        return date.strftime('%Y-%m-%d')
 
     def _create_session(self):
         session = Session()
