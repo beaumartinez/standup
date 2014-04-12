@@ -32,12 +32,10 @@ def parse_ticket_note(ticket_note):
     ), ticket_note)
 
 
-def parse_ticket_note(ticket_note):
-    ticket_note = ticket_note['ticket_note']
+def parse_user(user):
+    user = user['user']
 
-    return Struct(**_whitelist((
-        'content',
-        'created_at',
-        'updates',
-        'user_id',
-    ), ticket_note))
+    return _whitelist_as_struct((
+        'id',
+        'username',
+    ), user)
