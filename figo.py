@@ -17,7 +17,7 @@ log.addHandler(logging.StreamHandler())
 log.setLevel(logging.DEBUG)
 
 
-class Figo(object):
+class Codebase(object):
 
     def __init__(self, username, key):
         self.username = username
@@ -120,13 +120,13 @@ if __name__ == '__main__':
         print('Please pass your username and key', file=stderr)
         exit(1)
 
-    figo = Figo(username, key)
-    figo.get_own_ticket_notes()
+    codebase = Codebase(username, key)
+    codebase.get_own_ticket_notes()
 
-    for user in sorted(figo.user_ticket_notes):
+    for user in sorted(codebase.user_ticket_notes):
         print(user)
 
-        tickets = sorted(figo.user_ticket_notes[user])
+        tickets = sorted(codebase.user_ticket_notes[user])
         for ticket in tickets:
             print('\t{}'.format(ticket))
 
