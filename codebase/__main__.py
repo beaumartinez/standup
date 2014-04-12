@@ -12,12 +12,12 @@ if __name__ == '__main__':
     logging.disable(logging.CRITICAL)
 
     try:
-        username, key = argv[1], argv[2]
+        username, key, project = argv[1], argv[2], argv[3]
     except IndexError:
-        print('Please pass your username and key', file=stderr)
+        print('Please pass your username, key, and project', file=stderr)
         exit(1)
 
-    codebase = Codebase(username, key, 'locus')
+    codebase = Codebase(username, key, project)
     codebase.get_tickets()
 
     for user in sorted(codebase.user_tickets):
