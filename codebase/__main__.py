@@ -9,7 +9,8 @@ from . import Codebase
 
 
 if __name__ == '__main__':
-    logging.disable(logging.CRITICAL)
+    logger = logging.getLogger('codebase')
+    # logger.setLevel(logging.DEBUG)
 
     try:
         username, key, project = argv[1], argv[2], argv[3]

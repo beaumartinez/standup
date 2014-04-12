@@ -10,10 +10,9 @@ from .parser import parse_ticket_note
 from .parser import parse_user
 
 
-log = logging.getLogger(__name__)
+logging.basicConfig()
 
-log.addHandler(logging.StreamHandler())
-log.setLevel(logging.DEBUG)
+log = logging.getLogger(__name__)
 
 
 class Codebase(object):
