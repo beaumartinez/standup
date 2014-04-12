@@ -20,10 +20,10 @@ if __name__ == '__main__':
     codebase = Codebase(username, key, project)
     codebase.get_tickets()
 
-    for user in sorted(codebase.user_tickets):
+    for user in sorted(codebase.user_ticket_lookup):
         print(user)
 
-        tickets = sorted(codebase.user_tickets[user])
+        tickets = sorted(codebase.user_ticket_lookup[user])
         for ticket in tickets:
             print('\t{}'.format(ticket))
 

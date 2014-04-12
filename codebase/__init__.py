@@ -106,14 +106,14 @@ class Codebase(object):
             for note in ticket.ticket_notes:
                 note.username = self.user_lookup[note.user_id]
 
-    def _group_user_tickets(self):
-        user_tickets = defaultdict(set)
+    def _group_user_ticket_lookup(self):
+        user_ticket_lookup = defaultdict(set)
 
         for ticket in self.tickets:
             for note in ticket.ticket_notes:
-                user_tickets[note.username].add('{}: {}'.format(ticket.ticket_id, ticket.summary))
+                user_ticket_lookup[note.username].add('{}: {}'.format(ticket.ticket_id, ticket.summary))
 
-        self.user_tickets = user_tickets
+        self.user_ticket_lookup = user_ticket_lookup
 
     def get_tickets(self):
         self._get_tickets()
@@ -126,4 +126,4 @@ class Codebase(object):
         self._parse_users()
         self._build_user_id_lookup()
         self._set_ticket_note_usernames()
-        self._group_user_tickets()
+        self._group_user_ticket_lookup()
