@@ -23,7 +23,7 @@ class Codebase(object):
 
         self.project = project
 
-        date = datetime.utcnow() - timedelta(days=1)
+        date = datetime.utcnow()
         self.date = date.strftime('%Y-%m-%d')
 
         self.session = self._create_session()
