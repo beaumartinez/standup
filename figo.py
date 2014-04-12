@@ -121,7 +121,7 @@ class Codebase(object):
 
         self.user_tickets = user_tickets
 
-    def get_own_ticket_notes(self):
+    def get_tickets(self):
         self._get_tickets()
         self._parse_tickets()
         self._build_ticket_note_urls()
@@ -145,7 +145,7 @@ if __name__ == '__main__':
         exit(1)
 
     codebase = Codebase(username, key, 'locus')
-    codebase.get_own_ticket_notes()
+    codebase.get_tickets()
 
     for user in sorted(codebase.user_tickets):
         print(user)
