@@ -1,3 +1,9 @@
+class Struct(object):
+
+    def __init__(self, **entries): 
+        self.__dict__.update(entries)
+
+
 def _whitelist(keys, dict_):
     return {key: dict_[key] for key in keys}
 
@@ -5,18 +11,18 @@ def _whitelist(keys, dict_):
 def parse_ticket(ticket):
     ticket = ticket['ticket']
 
-    return _whitelist((
+    return Struct(**_whitelist((
         'summary',
         'ticket_id',
-    ), ticket)
+    ), ticket))
 
 
 def parse_ticket_note(ticket_note):
     ticket_note = ticket_note['ticket_note']
 
-    return _whitelist((
+    return Struct(**_whitelist((
         'content',
         'created_at',
         'updates',
         'user_id',
-    ), ticket_note)
+    ), ticket_note))
