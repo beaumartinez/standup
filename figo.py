@@ -79,36 +79,36 @@ class Codebase(object):
 
     def _build_ticket_note_urls(self):
         for ticket in self.tickets:
-            ticket['ticket_note_url'] = (
+            ticket.ticket_note_url = (
                 'https://api3.codebasehq.com/locus/tickets/{}/notes.json'
-            ).format(ticket['ticket_id'])
+            ).format(ticket.ticket_id)
 
     def _get_ticket_notes(self):
         for ticket in self.tickets:
-            log.debug('Getting notes for ticket {}.'.format(ticket['ticket_id']))
+            log.debug('Getting notes for ticket {}.'.format(ticket.ticket_id))
 
-            response = self.session.get(ticket['ticket_note_url'])
+            response = self.session.get(ticket.ticket_note_url)
 
-            ticket['ticket_notes'] = response.json()
+            ticket.ticket_notes = response.json()
 
     def _parse_ticket_notes(self):
         for ticket in self.tickets:
-            ticket['ticket_notes'] = map(parse_ticket_note, ticket['ticket_notes'])
+            ticket.ticket_notes = map(parse_ticket_note, ticket.ticket_notes)
 
     def _filter_todays_ticket_notes(self):
         for ticket in self.tickets:
-            ticket['ticket_notes'] = filter(
-                lambda x: x['created_at'].startswith(self.date), ticket['ticket_notes']
+            ticket.ticket_notes = filter(
+                lambda x: x.created_at.startswith(self.date), ticket.ticket_notes
             )
 
     def _group_user_ticket_notes(self):
         user_ticket_notes = defaultdict(set)
 
         for ticket in self.tickets:
-            for note in ticket['ticket_notes']:
-                username = self.user_lookup[note['user_id']]
+            for note in ticket.ticket_notes:
+                username = self.user_lookup[note.user_id]
 
-                user_ticket_notes[username].add('{}: {}'.format(ticket['ticket_id'], ticket['summary']))
+                user_ticket_notes[username].add('{}: {}'.format(ticket.ticket_id, ticket.summary))
 
         self.user_ticket_notes = dict(user_ticket_notes)
 
