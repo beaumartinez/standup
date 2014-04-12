@@ -24,9 +24,11 @@ log.setLevel(logging.DEBUG)
 
 class Codebase(object):
 
-    def __init__(self, username, key):
+    def __init__(self, username, key, project):
         self.username = username
         self.key = key
+
+        self.project = project
 
         date = datetime.utcnow() - timedelta(days=1)
         self.date = date.strftime('%Y-%m-%d')
@@ -42,7 +44,7 @@ class Codebase(object):
     def _get_users(self):
         log.debug('Getting users.')
 
-        response = self.session.get('https://api3.codebasehq.com/locus/assignments.json')
+        response = self.session.get('https://api3.codebasehq.com/{}/assignments.json'.format(self.project))
         self.users = response.json()
 
     def _parse_users(self):
@@ -65,9 +67,9 @@ class Codebase(object):
             log.debug('Getting tickets page {}.'.format(page))
 
             response = self.session.get((
-                'https://api3.codebasehq.com/locus/tickets.json?query=sort:updated_at+update:"{}"&'
+                'https://api3.codebasehq.com/{}/tickets.json?query=sort:updated_at+update:"{}"&'
                 'page={}'
-            ).format(self.date, page))
+            ).format(self.project, self.date, page))
 
             if response.status_code == 200:
                 tickets.extend(response.json())
@@ -84,8 +86,8 @@ class Codebase(object):
     def _build_ticket_note_urls(self):
         for ticket in self.tickets:
             ticket.ticket_note_url = (
-                'https://api3.codebasehq.com/locus/tickets/{}/notes.json'
-            ).format(ticket.ticket_id)
+                'https://api3.codebasehq.com/{}/tickets/{}/notes.json'
+            ).format(self.project, ticket.ticket_id)
 
     def _get_ticket_notes(self):
         for ticket in self.tickets:
@@ -138,7 +140,7 @@ if __name__ == '__main__':
         print('Please pass your username and key', file=stderr)
         exit(1)
 
-    codebase = Codebase(username, key)
+    codebase = Codebase(username, key, 'locus')
     codebase.get_own_ticket_notes()
 
     for user in sorted(codebase.user_ticket_notes):
