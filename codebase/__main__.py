@@ -18,7 +18,14 @@ if __name__ == '__main__':
         print('Please pass your username, key, and project', file=stderr)
         exit(1)
 
-    codebase = Codebase(username, key, project)
+    try:
+        days_ago = argv[4]
+    except IndexError:
+        days_ago = None
+    else:
+        days_ago = int(days_ago)
+
+    codebase = Codebase(username, key, project, days_ago=days_ago)
     codebase.get_tickets()
 
     for user in sorted(codebase.user_ticket_lookup):

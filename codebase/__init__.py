@@ -17,17 +17,20 @@ log = logging.getLogger(__name__)
 
 class Codebase(object):
 
-    def __init__(self, username, key, project):
+    def __init__(self, username, key, project, days_ago=None):
         self.username = username
         self.key = key
 
         self.project = project
 
-        self.date = self._get_date()
+        self.date = self._get_date(days_ago)
         self.session = self._create_session()
 
-    def _get_date(self):
+    def _get_date(self, days_ago=None):
         date = datetime.utcnow()
+
+        if days_ago is not None:
+            date -= timedelta(days=days_ago)
 
         return date.strftime('%Y-%m-%d')
 
