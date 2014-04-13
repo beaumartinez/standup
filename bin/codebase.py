@@ -1,6 +1,4 @@
-#! /usr/bin/env python2
-
-from __future__ import print_function
+#! /usr/bin/env python3
 
 from argparse import ArgumentParser
 from sys import path

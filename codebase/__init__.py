@@ -63,7 +63,7 @@ class Codebase(object):
         self.tickets = tickets
 
     def _parse_tickets(self):
-        self.tickets = map(parse_ticket, self.tickets)
+        self.tickets = tuple(map(parse_ticket, self.tickets))
 
     def _build_ticket_note_urls(self):
         for ticket in self.tickets:
@@ -81,13 +81,13 @@ class Codebase(object):
 
     def _parse_ticket_notes(self):
         for ticket in self.tickets:
-            ticket.ticket_notes = map(parse_ticket_note, ticket.ticket_notes)
+            ticket.ticket_notes = tuple(map(parse_ticket_note, ticket.ticket_notes))
 
     def _filter_todays_ticket_notes(self):
         for ticket in self.tickets:
-            ticket.ticket_notes = filter(
+            ticket.ticket_notes = tuple(filter(
                 lambda x: x.created_at.startswith(self.date), ticket.ticket_notes
-            )
+            ))
 
     def _get_users(self):
         log.debug('Getting users.')
@@ -96,7 +96,7 @@ class Codebase(object):
         self.users = response.json()
 
     def _parse_users(self):
-        self.users = map(parse_user, self.users)
+        self.users = tuple(map(parse_user, self.users))
 
     def _build_user_id_lookup(self):
         user_lookup = {}

@@ -3,6 +3,9 @@ class Struct(object):
     def __init__(self, **entries):
         self.__dict__.update(entries)
 
+    def __repr__(self):
+        return 'Struct(**{})'.format(self.__dict__)
+
 
 def _whitelist(keys, dict_):
     return {key: dict_[key] for key in keys}
