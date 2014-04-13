@@ -12,7 +12,7 @@ from codebase import Codebase
 
 
 if __name__ == '__main__':
-    parser = ArgumentParser(description="Print today's activity on Codebase.")
+    parser = ArgumentParser(description="print today's activity on Codebase.")
     parser.add_argument('username', help='API username')
     parser.add_argument('key', help='API key')
     parser.add_argument('project', help='project name')
