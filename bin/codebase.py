@@ -32,11 +32,14 @@ if __name__ == '__main__':
 
     if not args.all_users:
         raw_username = args.username.split('/')[1]
-        users = filter(lambda x: x == raw_username, raw_username)
+        users = tuple(filter(lambda x: x == raw_username, raw_username))
 
-    for user in users:
+    for index, user in enumerate(users):
         print(user)
 
         tickets = sorted(codebase.user_ticket_lookup[user])
         for ticket in tickets:
             print('    {}'.format(ticket))
+
+        if index + 1 != len(users):  # Not last iteration
+            print()
