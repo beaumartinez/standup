@@ -4,6 +4,7 @@ from datetime import datetime
 from datetime import timedelta
 
 from requests import Session
+from requests.exceptions import HTTPError
 
 from .parser import parse_ticket
 from .parser import parse_ticket_note
@@ -27,7 +28,7 @@ class Codebase(object):
         self.session = self._create_session()
 
         self.url_root = self._build_url_root()
-    
+
     def _get_date(self, days_ago=None):
         date = datetime.utcnow()
 
@@ -60,12 +61,14 @@ class Codebase(object):
                 self._url('/tickets.json?query=sort:updated_at+update:"{}"&page={}', self.date, page)
             )
 
-            if response.status_code == 200:
+            try:
+                response.raise_for_status()
+            except HTTPError:
+                done = True
+            else:
                 tickets.extend(response.json())
 
                 page += 1
-            else:
-                done = True
 
         self.tickets = tickets
 
