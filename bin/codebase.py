@@ -14,6 +14,7 @@ if __name__ == '__main__':
     parser.add_argument('username', help='API username')
     parser.add_argument('key', help='API key')
     parser.add_argument('project', help='project name')
+    parser.add_argument('--user', default='', help="only print USER's activity")
     parser.add_argument('--days-ago', default=None, help="show DAYS_AGO days ago's activity", type=int)
     parser.add_argument('--debug', action='store_true')
 
@@ -28,8 +29,9 @@ if __name__ == '__main__':
     codebase.get_tickets()
 
     for user in sorted(codebase.user_ticket_lookup):
-        print(user)
+        if user.startswith(args.user):
+            print(user)
 
-        tickets = sorted(codebase.user_ticket_lookup[user])
-        for ticket in tickets:
-            print('    {}'.format(ticket))
+            tickets = sorted(codebase.user_ticket_lookup[user])
+            for ticket in tickets:
+                print('    {}'.format(ticket))
