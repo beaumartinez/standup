@@ -14,7 +14,7 @@ if __name__ == '__main__':
     parser.add_argument('username', help='API username')
     parser.add_argument('key', help='API key')
     parser.add_argument('project', help='project name')
-    parser.add_argument('-u', '--user', default='', help="only print USER's activity")
+    parser.add_argument('-a', '--all-users', action='store_true', help="print all user's activity")
     parser.add_argument('-d', '--days-ago', default=None, help="show DAYS_AGO days ago's activity", type=int)
     parser.add_argument('--debug', action='store_true')
 
@@ -28,10 +28,15 @@ if __name__ == '__main__':
     codebase = Codebase(args.username, args.key, args.project, days_ago=args.days_ago)
     codebase.get_tickets()
 
-    for user in sorted(codebase.user_ticket_lookup):
-        if user.startswith(args.user):
-            print(user)
+    users = sorted(codebase.user_ticket_lookup)
 
-            tickets = sorted(codebase.user_ticket_lookup[user])
-            for ticket in tickets:
-                print('    {}'.format(ticket))
+    if not args.all_users:
+        raw_username = args.username.split('/')[1]
+        users = filter(lambda x: x == raw_username, raw_username)
+
+    for user in users:
+        print(user)
+
+        tickets = sorted(codebase.user_ticket_lookup[user])
+        for ticket in tickets:
+            print('    {}'.format(ticket))
