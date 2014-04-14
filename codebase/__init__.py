@@ -115,7 +115,7 @@ class Codebase(object):
             for note in ticket.ticket_notes:
                 note.username = self.user_lookup[note.user_id]
 
-    def _group_user_ticket_lookup(self):
+    def _build_user_ticket_lookup(self):
         self.user_ticket_lookup = defaultdict(set)
 
         for ticket in self.tickets:
@@ -133,4 +133,4 @@ class Codebase(object):
         self._parse_users()
         self._build_user_id_lookup()
         self._set_ticket_note_usernames()
-        self._group_user_ticket_lookup()
+        self._build_user_ticket_lookup()
