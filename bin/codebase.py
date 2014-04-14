@@ -39,7 +39,7 @@ if __name__ == '__main__':
 
         tickets = sorted(codebase.user_ticket_lookup[user])
         for ticket in tickets:
-            print('    {}'.format(ticket))
+            print('  {}'.format(ticket))
 
         if index + 1 != len(users):  # Not last iteration
             print()
