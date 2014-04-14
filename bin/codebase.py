@@ -32,6 +32,6 @@ if __name__ == '__main__':
 
         tickets = sorted(codebase.user_ticket_lookup[user])
         for ticket in tickets:
-            print('\t{}'.format(ticket))
+            print('    {}'.format(ticket))
 
         print()
