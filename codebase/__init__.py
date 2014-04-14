@@ -26,6 +26,8 @@ class Codebase(object):
         self.date = self._get_date(days_ago)
         self.session = self._create_session()
 
+        self.url_root = self._build_url_root()
+    
     def _get_date(self, days_ago=None):
         date = datetime.utcnow()
 
@@ -40,6 +42,12 @@ class Codebase(object):
 
         return session
 
+    def _build_url_root(self):
+        return 'https://api3.codebasehq.com/{}'.format(self.project)
+
+    def _url(self, url, *args):
+        return (self.url_root + url).format(*args)
+
     def _get_tickets(self):
         tickets = []
 
@@ -48,10 +56,9 @@ class Codebase(object):
         while not done:
             log.debug('Getting tickets page {}.'.format(page))
 
-            response = self.session.get((
-                'https://api3.codebasehq.com/{}/tickets.json?query=sort:updated_at+update:"{}"&'
-                'page={}'
-            ).format(self.project, self.date, page))
+            response = self.session.get(
+                self._url('/tickets.json?query=sort:updated_at+update:"{}"&page={}', self.date, page)
+            )
 
             if response.status_code == 200:
                 tickets.extend(response.json())
@@ -67,9 +74,7 @@ class Codebase(object):
 
     def _build_ticket_note_urls(self):
         for ticket in self.tickets:
-            ticket.ticket_note_url = (
-                'https://api3.codebasehq.com/{}/tickets/{}/notes.json'
-            ).format(self.project, ticket.ticket_id)
+            ticket.ticket_note_url = self._url('/tickets/{}/notes.json', ticket.ticket_id)
 
     def _get_ticket_notes(self):
         for ticket in self.tickets:
@@ -92,7 +97,7 @@ class Codebase(object):
     def _get_users(self):
         log.debug('Getting users.')
 
-        response = self.session.get('https://api3.codebasehq.com/{}/assignments.json'.format(self.project))
+        response = self.session.get(self._url('/assignments.json'))
         self.users = response.json()
 
     def _parse_users(self):
