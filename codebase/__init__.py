@@ -50,7 +50,7 @@ class Codebase(object):
         return (self.url_root + url).format(*args)
 
     def _get_tickets(self):
-        tickets = []
+        self.tickets = []
 
         page = 0
         done = False
@@ -66,11 +66,9 @@ class Codebase(object):
             except HTTPError:
                 done = True
             else:
-                tickets.extend(response.json())
+                self.tickets.extend(response.json())
 
                 page += 1
-
-        self.tickets = tickets
 
     def _parse_tickets(self):
         self.tickets = tuple(map(parse_ticket, self.tickets))
@@ -107,12 +105,10 @@ class Codebase(object):
         self.users = tuple(map(parse_user, self.users))
 
     def _build_user_id_lookup(self):
-        user_lookup = {}
+        self.user_lookup = {}
 
         for user in self.users:
-            user_lookup[user.id] = user.username
-
-        self.user_lookup = user_lookup
+            self.user_lookup[user.id] = user.username
 
     def _set_ticket_note_usernames(self):
         for ticket in self.tickets:
@@ -120,13 +116,11 @@ class Codebase(object):
                 note.username = self.user_lookup[note.user_id]
 
     def _group_user_ticket_lookup(self):
-        user_ticket_lookup = defaultdict(set)
+        self.user_ticket_lookup = defaultdict(set)
 
         for ticket in self.tickets:
             for note in ticket.ticket_notes:
-                user_ticket_lookup[note.username].add('{}: {}'.format(ticket.ticket_id, ticket.summary))
-
-        self.user_ticket_lookup = user_ticket_lookup
+                self.user_ticket_lookup[note.username].add('{}: {}'.format(ticket.ticket_id, ticket.summary))
 
     def get_tickets(self):
         self._get_tickets()
