@@ -6,7 +6,11 @@ Have you ever been in a standup, and suddenly thought—
 
 I know I have. Hell, I think that every waking moment of my life.
 
-Well, if you use Codebase to manage your projects, boy are you in luck today.
+Well, if you use [Codebase](http://www.codebasehq.com/) to manage your projects, boy are you in luck today.
+
+## Installation
+
+	pip3 install git+https://github.com/beaumartinez/standup.git
 
 ## Usage
 
@@ -25,13 +29,13 @@ And you can see what everyone else did as well, and call them out on LYING.
 Lazy? Instead of typing your username and key everytime, you can create a JSON file at `~/.codebase`–
 
 	{
-		"username": "potato/beau",
+		"username": "coolstorybro/beau",
 		"key": "666"
 	}
 
 And then type—
 
-	standup_codebase.py <project>
+	standup_codebase.py <project> -a
 
 Much easier. Hit up `standup_codebase.py -h` for full help.
 
