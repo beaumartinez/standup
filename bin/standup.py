@@ -1,10 +1,7 @@
 #! /usr/bin/env python3
 
 from argparse import ArgumentParser
-from sys import path
 import logging
-
-path.insert(0, '..')
 
 from codebase import Codebase
 
