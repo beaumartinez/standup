@@ -9,8 +9,8 @@ setup(
     description='What the FUCK did I do today',
     license='WTFPL',
     name='standup',
-    packages=['codebase'],
-    scripts=['bin/standup.py'],
+    packages=['standup', 'standup.codebase'],
+    scripts=['bin/c_standup.py'],
     url='http://github.com/beaumartinez/standup/',
     version='0.1',
 )
