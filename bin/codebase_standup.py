@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
     if not args.all_users:
         raw_username = codebase.username.split('/')[1]
-        users = tuple(filter(lambda x: x.username == raw_username, raw_username))
+        users = tuple(filter(lambda x: x.username == raw_username, users))
 
     for index, user in enumerate(users):
         print(user.first_name)
