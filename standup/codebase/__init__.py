@@ -18,19 +18,25 @@ logging.basicConfig()
 log = logging.getLogger(__name__)
 
 
+CREDENTIALS_ERROR = '{} ~/.codebase found. Create a JSON file with keys "username" and "key"'
+
+
 def _get_credentials():
     try:
         with open(expanduser('~/.codebase')) as credentials_file:
             credentials_data = credentials_file.read()
     except IOError:
-        raise ValueError('No ~/.codebase found. Create a JSON file with keys "username" and "key"')
+        raise ValueError(CREDENTIALS_ERROR.format('No'))
 
     try:
         credentials = loads(credentials_data)
     except ValueError:
-        raise ValueError('Invalid ~/.codebase found. Create a JSON file with keys "username" and "key"')
+        raise ValueError(CREDENTIALS_ERROR.format('Invalid')))
 
-    return credentials['username'], credentials['key']
+    try:
+        username, key = credentials['username'], credentials['key']
+    except KeyError:
+        raise ValueError(CREDENTIALS_ERROR.format('Invalid'))
 
 
 class Codebase(object):
