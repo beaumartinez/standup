@@ -1,12 +1,8 @@
 #! /usr/bin/env python3
 
-from argparse import ArgumentParser
-import logging
-
-from standup.codebase import Codebase
-
-
 if __name__ == '__main__':
+    from argparse import ArgumentParser
+
     parser = ArgumentParser(description="print today's activity on Codebase.")
     parser.add_argument('project', help='project name')
     parser.add_argument('-u', '--username', help='API username')
@@ -20,9 +16,12 @@ if __name__ == '__main__':
     # Preparation
 
     if args.debug:
-        logger = logging.getLogger('standup.codebase')
+        import logging
 
+        logger = logging.getLogger('standup.codebase')
         logger.setLevel(logging.DEBUG)
+
+    from standup.codebase import Codebase
 
     if None not in (args.username, args.key):
         codebase = Codebase(args.username, args.key, args.project, days_ago=args.days_ago)
