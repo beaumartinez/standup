@@ -8,7 +8,7 @@ setup(
     description='What the FUCK did I do today',
     name='standup',
     packages=['standup', 'standup.codebase'],
-    scripts=['bin/codebase_standup.py'],
+    scripts=['bin/standup_codebase.py'],
     url='http://github.com/beaumartinez/standup/',
     version='0.1',
 )
