@@ -2,6 +2,8 @@ import logging
 from collections import defaultdict
 from datetime import datetime
 from datetime import timedelta
+from os.path import expanduser
+from json import loads
 
 from requests import Session
 from requests.exceptions import HTTPError
@@ -16,7 +18,30 @@ logging.basicConfig()
 log = logging.getLogger(__name__)
 
 
+def _get_credentials():
+    try:
+        with open(expanduser('~/.codebase')) as credentials_file:
+            credentials_data = credentials_file.read()
+    except IOError:
+        raise ValueError('No ~/.codebase found. Create a JSON file with keys "username" and "key"')
+
+    try:
+        credentials = loads(credentials_data)
+    except ValueError:
+        raise ValueError('Invalid ~/.codebase found. Create a JSON file with keys "username" and "key"')
+
+    return credentials['username'], credentials['key']
+
+
 class Codebase(object):
+
+    @classmethod
+    def from_credentials_file(cls, project, days_ago=None):
+        username, key = _get_credentials()
+
+        log.debug('Loaded credentials file: {}, {}.'.format(username, key))
+
+        return cls(username, key, project, days_ago=days_ago)
 
     def __init__(self, username, key, project, days_ago=None):
         self.username = username
