@@ -12,12 +12,28 @@ Well, if you use Codebase to manage your projects, boy are you in luck today.
 
 To find out what the FUCK you did today, open up a terminal and type—
 
-    python -m codebase <username> <key> <project>
+	standup_codebase.py -u<username> -k<key> <project>
 
 (NB, you can find `<username>` and `<key>` in Codebase somewhere.) Wait a few seconds and BOOM instant standup information.
-Added bonus is you can see what everyone else did, and call them out on LYING.
 
-Still a bit rusty and WIP but it works. Oh yeah you'll probably need to `pip install requests` first.
+Type—
+
+	standup_codebase.py -u<username> -k<key> <project> -a
+
+And you can see what everyone else did as well, and call them out on LYING.
+
+Lazy? Instead of typing your username and key everytime, you can create a JSON file at `~/.codebase`–
+
+	{
+		"username": "potato/beau",
+		"key": "666"
+	}
+
+And then type—
+
+	standup_codebase.py <project>
+
+Much easier. Hit up `standup_codebase.py -h` for full help.
 
 ## License
 
