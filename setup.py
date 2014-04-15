@@ -25,5 +25,5 @@ setup(
         'bin/standup_codebase.py',
     ],
     url='http://github.com/beaumartinez/standup/',
-    version='0.1.1',
+    version='0.1.2',
 )
