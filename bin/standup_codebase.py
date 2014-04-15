@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-if __name__ == '__main__':
+def build_parser():
     from argparse import ArgumentParser
 
     parser = ArgumentParser(description="print today's activity on Codebase.")
@@ -13,8 +13,10 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    # Preparation
+    return args
 
+
+def build_codebase(args):
     if args.debug:
         import logging
 
@@ -28,8 +30,10 @@ if __name__ == '__main__':
     else:
         codebase = Codebase.from_credentials_file(args.project, days_ago=args.days_ago)
 
-    # Do shit
+    return codebase
 
+
+def get_tickets(args, codebase):
     codebase.get_tickets()
 
     users = sorted(codebase.user_ticket_lookup, key=lambda x: x.first_name)
@@ -47,3 +51,10 @@ if __name__ == '__main__':
 
         if index + 1 != len(users):  # Not last iteration
             print()
+
+
+if __name__ == '__main__':
+    args = build_parser()
+    codebase =  build_codebase(args)
+
+    get_tickets(args, codebase)
