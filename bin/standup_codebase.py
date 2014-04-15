@@ -45,7 +45,14 @@ def get_tickets(args, codebase):
     for index, user in enumerate(users):
         print(user.first_name)
 
-        tickets = sorted(codebase.user_ticket_lookup[user])
+        def _get_ticket_id(ticket):
+            colon_index = ticket.find(':')
+            ticket_id = ticket[:colon_index]
+            ticket_id = int(ticket_id)
+
+            return ticket_id
+
+        tickets = sorted(codebase.user_ticket_lookup[user], key=_get_ticket_id)
         for ticket in tickets:
             print('  {}'.format(ticket))
 
