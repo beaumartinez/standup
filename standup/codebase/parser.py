@@ -39,6 +39,7 @@ def parse_user(user):
     user = user['user']
 
     return _whitelist_as_struct((
+        'first_name',
         'id',
         'username',
     ), user)

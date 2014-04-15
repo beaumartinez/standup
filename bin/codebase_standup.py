@@ -32,14 +32,14 @@ if __name__ == '__main__':
 
     codebase.get_tickets()
 
-    users = sorted(codebase.user_ticket_lookup)
+    users = sorted(codebase.user_ticket_lookup, key=lambda x: x.first_name)
 
     if not args.all_users:
         raw_username = codebase.username.split('/')[1]
-        users = tuple(filter(lambda x: x == raw_username, raw_username))
+        users = tuple(filter(lambda x: x.username == raw_username, raw_username))
 
     for index, user in enumerate(users):
-        print(user)
+        print(user.first_name)
 
         tickets = sorted(codebase.user_ticket_lookup[user])
         for ticket in tickets:

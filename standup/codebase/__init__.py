@@ -133,7 +133,7 @@ class Codebase(object):
         self.user_lookup = {}
 
         for user in self.users:
-            self.user_lookup[user.id] = user.username
+            self.user_lookup[user.id] = user
 
     def _set_ticket_note_usernames(self):
         for ticket in self.tickets:
