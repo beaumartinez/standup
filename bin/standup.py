@@ -3,7 +3,7 @@
 from argparse import ArgumentParser
 import logging
 
-from codebase import Codebase
+from standup.codebase import Codebase
 
 
 if __name__ == '__main__':
