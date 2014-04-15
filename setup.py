@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 with open('README.md') as readme_file:
@@ -13,17 +13,14 @@ setup(
     classifiers=[
         'Programming Language :: Python :: 3.4',
     ],
-    description='What the FUCK did I do today',
+    description='"What the FUCK did I do today?"',
     install_requires=[
         'requests>=2.2.1',
     ],
     licence='WTFPL',
     long_description=readme,
     name='standup',
-    packages=[
-        'standup',
-        'standup.codebase',
-    ],
+    packages=find_packages(),
     scripts=[
         'bin/standup_codebase.py',
     ],
