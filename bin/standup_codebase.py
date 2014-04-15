@@ -33,7 +33,7 @@ def build_codebase(args):
     return codebase
 
 
-def get_tickets(args, codebase):
+def print_tickets(args, codebase):
     codebase.get_tickets()
 
     users = sorted(codebase.user_ticket_lookup, key=lambda x: x.first_name)
@@ -64,4 +64,4 @@ if __name__ == '__main__':
     args = build_parser()
     codebase =  build_codebase(args)
 
-    get_tickets(args, codebase)
+    print_tickets(args, codebase)
