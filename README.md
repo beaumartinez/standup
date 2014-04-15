@@ -10,7 +10,7 @@ Well, if you use [Codebase](http://www.codebasehq.com/) to manage your projects,
 
 ## Installation
 
-	pip3 install git+https://github.com/beaumartinez/standup.git
+	pip install standup
 
 ## Usage
 
